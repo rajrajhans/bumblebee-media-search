@@ -56,7 +56,12 @@ defmodule MediaSearchDemo.MixProject do
 
       # Linting
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+
+      # ML
+      {:bumblebee, "~> 0.1.2"},
+      {:nx, "~> 0.4.1"},
+      {:exla, "~> 0.4.1"}
     ]
   end
 
