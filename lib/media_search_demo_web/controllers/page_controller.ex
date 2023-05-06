@@ -1,5 +1,5 @@
-defmodule PhoenixStarterWeb.PageController do
-  use PhoenixStarterWeb, :controller
+defmodule MediaSearchDemoWeb.PageController do
+  use MediaSearchDemoWeb, :controller
 
   def home(conn, _params) do
     # The home page is often custom made,

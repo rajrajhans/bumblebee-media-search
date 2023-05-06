@@ -1,4 +1,4 @@
-defmodule PhoenixStarterWeb.Telemetry do
+defmodule MediaSearchDemoWeb.Telemetry do
   use Supervisor
   import Telemetry.Metrics
 
@@ -52,23 +52,23 @@ defmodule PhoenixStarterWeb.Telemetry do
       ),
 
       # Database Metrics
-      summary("phoenix_starter.repo.query.total_time",
+      summary("media_search_demo.repo.query.total_time",
         unit: {:native, :millisecond},
         description: "The sum of the other measurements"
       ),
-      summary("phoenix_starter.repo.query.decode_time",
+      summary("media_search_demo.repo.query.decode_time",
         unit: {:native, :millisecond},
         description: "The time spent decoding the data received from the database"
       ),
-      summary("phoenix_starter.repo.query.query_time",
+      summary("media_search_demo.repo.query.query_time",
         unit: {:native, :millisecond},
         description: "The time spent executing the query"
       ),
-      summary("phoenix_starter.repo.query.queue_time",
+      summary("media_search_demo.repo.query.queue_time",
         unit: {:native, :millisecond},
         description: "The time spent waiting for a database connection"
       ),
-      summary("phoenix_starter.repo.query.idle_time",
+      summary("media_search_demo.repo.query.idle_time",
         unit: {:native, :millisecond},
         description:
           "The time the connection spent waiting before being checked out for the query"
@@ -86,7 +86,7 @@ defmodule PhoenixStarterWeb.Telemetry do
     [
       # A module, function and arguments to be invoked periodically.
       # This function must call :telemetry.execute/3 and a metric must be added above.
-      # {PhoenixStarterWeb, :count_users, []}
+      # {MediaSearchDemoWeb, :count_users, []}
     ]
   end
 end

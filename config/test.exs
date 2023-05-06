@@ -7,7 +7,7 @@ database_url =
     For example: ecto://USER:PASS@HOST/DATABASE
     """
 
-config :phoenix_starter, PhoenixStarter.Repo,
+config :media_search_demo, MediaSearchDemo.Repo,
   url: database_url,
   show_sensitive_data_on_connection_error: true,
   pool: Ecto.Adapters.SQL.Sandbox,
@@ -15,13 +15,13 @@ config :phoenix_starter, PhoenixStarter.Repo,
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :phoenix_starter, PhoenixStarterWeb.Endpoint,
+config :media_search_demo, MediaSearchDemoWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "Xp21XbKLdyDjw3qowW4p5rdqWjyt2HUx4/YVZauLhleUvIXzMxa8vkeOK0hVD1Ki",
   server: false
 
 # In test we don't send emails.
-config :phoenix_starter, PhoenixStarter.Mailer, adapter: Swoosh.Adapters.Test
+config :media_search_demo, MediaSearchDemo.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

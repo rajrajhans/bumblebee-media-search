@@ -1,2 +1,2 @@
 ExUnit.start()
-Ecto.Adapters.SQL.Sandbox.mode(PhoenixStarter.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(MediaSearchDemo.Repo, :manual)

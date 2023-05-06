@@ -7,17 +7,17 @@
 # General application configuration
 import Config
 
-config :phoenix_starter,
-  ecto_repos: [PhoenixStarter.Repo]
+config :media_search_demo,
+  ecto_repos: [MediaSearchDemo.Repo]
 
 # Configures the endpoint
-config :phoenix_starter, PhoenixStarterWeb.Endpoint,
+config :media_search_demo, MediaSearchDemoWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [
-    formats: [html: PhoenixStarterWeb.ErrorHTML, json: PhoenixStarterWeb.ErrorJSON],
+    formats: [html: MediaSearchDemoWeb.ErrorHTML, json: MediaSearchDemoWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: PhoenixStarter.PubSub,
+  pubsub_server: MediaSearchDemo.PubSub,
   live_view: [signing_salt: "vs3ehWXe"]
 
 # Configures the mailer
@@ -27,7 +27,7 @@ config :phoenix_starter, PhoenixStarterWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :phoenix_starter, PhoenixStarter.Mailer, adapter: Swoosh.Adapters.Local
+config :media_search_demo, MediaSearchDemo.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,

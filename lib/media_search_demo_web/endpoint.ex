@@ -1,12 +1,12 @@
-defmodule PhoenixStarterWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :phoenix_starter
+defmodule MediaSearchDemoWeb.Endpoint do
+  use Phoenix.Endpoint, otp_app: :media_search_demo
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
     store: :cookie,
-    key: "_phoenix_starter_key",
+    key: "_media_search_demo_key",
     signing_salt: "UYLZ5Nbk",
     same_site: "Lax"
   ]
@@ -19,9 +19,9 @@ defmodule PhoenixStarterWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :phoenix_starter,
+    from: :media_search_demo,
     gzip: false,
-    only: PhoenixStarterWeb.static_paths()
+    only: MediaSearchDemoWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -29,7 +29,7 @@ defmodule PhoenixStarterWeb.Endpoint do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
-    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :phoenix_starter
+    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :media_search_demo
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,
@@ -47,5 +47,5 @@ defmodule PhoenixStarterWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug PhoenixStarterWeb.Router
+  plug MediaSearchDemoWeb.Router
 end

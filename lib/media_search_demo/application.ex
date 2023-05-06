@@ -1,4 +1,4 @@
-defmodule PhoenixStarter.Application do
+defmodule MediaSearchDemo.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -9,22 +9,22 @@ defmodule PhoenixStarter.Application do
   def start(_type, _args) do
     children = [
       # Start the Telemetry supervisor
-      PhoenixStarterWeb.Telemetry,
+      MediaSearchDemoWeb.Telemetry,
       # Start the Ecto repository
-      PhoenixStarter.Repo,
+      MediaSearchDemo.Repo,
       # Start the PubSub system
-      {Phoenix.PubSub, name: PhoenixStarter.PubSub},
+      {Phoenix.PubSub, name: MediaSearchDemo.PubSub},
       # Start Finch
-      {Finch, name: PhoenixStarter.Finch},
+      {Finch, name: MediaSearchDemo.Finch},
       # Start the Endpoint (http/https)
-      PhoenixStarterWeb.Endpoint
-      # Start a worker by calling: PhoenixStarter.Worker.start_link(arg)
-      # {PhoenixStarter.Worker, arg}
+      MediaSearchDemoWeb.Endpoint
+      # Start a worker by calling: MediaSearchDemo.Worker.start_link(arg)
+      # {MediaSearchDemo.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: PhoenixStarter.Supervisor]
+    opts = [strategy: :one_for_one, name: MediaSearchDemo.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
@@ -32,7 +32,7 @@ defmodule PhoenixStarter.Application do
   # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
-    PhoenixStarterWeb.Endpoint.config_change(changed, removed)
+    MediaSearchDemoWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

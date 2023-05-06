@@ -1,4 +1,4 @@
-defmodule PhoenixStarterWeb.ConnCase do
+defmodule MediaSearchDemoWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -11,7 +11,7 @@ defmodule PhoenixStarterWeb.ConnCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use PhoenixStarterWeb.ConnCase, async: true`, although
+  by setting `use MediaSearchDemoWeb.ConnCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -20,19 +20,19 @@ defmodule PhoenixStarterWeb.ConnCase do
   using do
     quote do
       # The default endpoint for testing
-      @endpoint PhoenixStarterWeb.Endpoint
+      @endpoint MediaSearchDemoWeb.Endpoint
 
-      use PhoenixStarterWeb, :verified_routes
+      use MediaSearchDemoWeb, :verified_routes
 
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
-      import PhoenixStarterWeb.ConnCase
+      import MediaSearchDemoWeb.ConnCase
     end
   end
 
   setup tags do
-    PhoenixStarter.DataCase.setup_sandbox(tags)
+    MediaSearchDemo.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

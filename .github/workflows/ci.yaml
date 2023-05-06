@@ -108,7 +108,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: phoenix_starter_test
+          POSTGRES_DB: media_search_demo_test
         ports:
           - 5432/tcp
         options: >-
@@ -153,4 +153,4 @@ jobs:
           nix-shell shell.nix --run 'run test.migration'
           nix-shell shell.nix --run 'run test.ci'
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:${{job.services.postgres.ports[5432]}}/phoenix_starter_test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:${{job.services.postgres.ports[5432]}}/media_search_demo_test

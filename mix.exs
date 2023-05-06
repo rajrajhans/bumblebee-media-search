@@ -1,9 +1,9 @@
-defmodule PhoenixStarter.MixProject do
+defmodule MediaSearchDemo.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :phoenix_starter,
+      app: :media_search_demo,
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -21,7 +21,7 @@ defmodule PhoenixStarter.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {PhoenixStarter.Application, []},
+      mod: {MediaSearchDemo.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

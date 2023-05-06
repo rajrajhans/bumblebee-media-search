@@ -1,5 +1,5 @@
-defmodule PhoenixStarterWeb.PageControllerTest do
-  use PhoenixStarterWeb.ConnCase
+defmodule MediaSearchDemoWeb.PageControllerTest do
+  use MediaSearchDemoWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")

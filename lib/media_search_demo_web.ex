@@ -1,12 +1,12 @@
-defmodule PhoenixStarterWeb do
+defmodule MediaSearchDemoWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
 
   This can be used in your application as:
 
-      use PhoenixStarterWeb, :controller
-      use PhoenixStarterWeb, :html
+      use MediaSearchDemoWeb, :controller
+      use MediaSearchDemoWeb, :html
 
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
@@ -40,10 +40,10 @@ defmodule PhoenixStarterWeb do
     quote do
       use Phoenix.Controller,
         formats: [:html, :json],
-        layouts: [html: PhoenixStarterWeb.Layouts]
+        layouts: [html: MediaSearchDemoWeb.Layouts]
 
       import Plug.Conn
-      import PhoenixStarterWeb.Gettext
+      import MediaSearchDemoWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -52,7 +52,7 @@ defmodule PhoenixStarterWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {PhoenixStarterWeb.Layouts, :app}
+        layout: {MediaSearchDemoWeb.Layouts, :app}
 
       unquote(html_helpers())
     end
@@ -84,8 +84,8 @@ defmodule PhoenixStarterWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
-      import PhoenixStarterWeb.CoreComponents
-      import PhoenixStarterWeb.Gettext
+      import MediaSearchDemoWeb.CoreComponents
+      import MediaSearchDemoWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
@@ -98,9 +98,9 @@ defmodule PhoenixStarterWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: PhoenixStarterWeb.Endpoint,
-        router: PhoenixStarterWeb.Router,
-        statics: PhoenixStarterWeb.static_paths()
+        endpoint: MediaSearchDemoWeb.Endpoint,
+        router: MediaSearchDemoWeb.Router,
+        statics: MediaSearchDemoWeb.static_paths()
     end
   end
 

@@ -1,4 +1,4 @@
-defmodule PhoenixStarterWeb.CoreComponents do
+defmodule MediaSearchDemoWeb.CoreComponents do
   @moduledoc """
   Provides core UI components.
 
@@ -17,7 +17,7 @@ defmodule PhoenixStarterWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import PhoenixStarterWeb.Gettext
+  import MediaSearchDemoWeb.Gettext
 
   @doc """
   Renders a modal.
@@ -625,9 +625,9 @@ defmodule PhoenixStarterWeb.CoreComponents do
     # with our gettext backend as first argument. Translations are
     # available in the errors.po file (as we use the "errors" domain).
     if count = opts[:count] do
-      Gettext.dngettext(PhoenixStarterWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(MediaSearchDemoWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(PhoenixStarterWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(MediaSearchDemoWeb.Gettext, "errors", msg, opts)
     end
   end
 
