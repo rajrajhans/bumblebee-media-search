@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+CURRENT_NAME=PhoenixStarter
+CURRENT_OTP=phoenix_starter
+
+for ARGUMENT in "$@"
+do
+   KEY=$(echo $ARGUMENT | cut -f1 -d=)
+
+   KEY_LENGTH=${#KEY}
+   VALUE="${ARGUMENT:$KEY_LENGTH+1}"
+
+   export "$KEY"="$VALUE"
+done
+
+check_empty_variable() {
+  if [ -z "$1" ]; then
+    echo "Error: variable $2 is empty" >&2
+    exit 1
+  fi
+}
+
+check_empty_variable "$MODULE" "MODULE"
+check_empty_variable "$APP" "APP"
+
+NEW_NAME=$MODULE
+NEW_OTP=$APP
+
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  ack -l $CURRENT_NAME --ignore-file=is:rename_phoenix_project | xargs sed -i -e "s/$CURRENT_NAME/$NEW_NAME/g"
+  ack -l $CURRENT_OTP --ignore-file=is:rename_phoenix_project | xargs sed -i -e "s/$CURRENT_OTP/$NEW_OTP/g"
+else
+  ack -l $CURRENT_NAME --ignore-file=is:rename_phoenix_project | xargs sed -i '' -e "s/$CURRENT_NAME/$NEW_NAME/g"
+  ack -l $CURRENT_OTP --ignore-file=is:rename_phoenix_project | xargs sed -i '' -e "s/$CURRENT_OTP/$NEW_OTP/g"
+fi
+
+git mv lib/$CURRENT_OTP lib/$NEW_OTP || echo "No lib/$CURRENT_OTP to rename. Skipping."
+git mv lib/$CURRENT_OTP.ex lib/$NEW_OTP.ex || echo "No lib/$CURRENT_OTP.ex to rename. Skipping."
+git mv lib/${CURRENT_OTP}_web lib/${NEW_OTP}_web || echo "No lib/${CURRENT_OTP}_web to rename. Skipping."
+git mv lib/${CURRENT_OTP}_web.ex lib/${NEW_OTP}_web.ex || echo "No lib/${CURRENT_OTP}_web.ex to rename. Skipping."
+git mv test/$CURRENT_OTP test/$NEW_OTP || echo "No test/$CURRENT_OTP to rename. Skipping."
+git mv test/${CURRENT_OTP}_web test/${NEW_OTP}_web || echo "No test/${CURRENT_OTP}_web to rename. Skipping."
+
+echo "Done renaming project from $CURRENT_NAME to $NEW_NAME"

@@ -1,0 +1,156 @@
+name: "CI"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [develop, main]
+
+env:
+  MIX_ENV: test
+  ENV: test
+
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: cachix/install-nix-action@v16
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: set elixir and otp version
+        id: hex-info
+        shell: bash
+        run: |
+          ELIXIR_VERSION=$(nix-shell shell.nix --run "mix hex.info" | sed -n 2p  | awk '{print $2}')
+          OTP_VERSION=$(nix-shell shell.nix --run "mix hex.info" | sed -n 3p  | awk '{print $2}')
+          echo Elixir: $ELIXIR_VERSION
+          echo OTP: $OTP_VERSION
+          echo "::set-output name=otp-version::$OTP_VERSION"
+          echo "::set-output name=elixir-version::$ELIXIR_VERSION"
+
+      - name: Retrieve Mix Dependencies Cache
+        uses: actions/cache@v2
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: my-random-cache-key-1234-${{ runner.os }}-${{ steps.hex-info.outputs.otp-version }}-${{ steps.hex-info.outputs.elixir-version }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
+      - name: Install Mix Dependencies
+        if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: |
+          nix-shell shell.nix --run 'run release'
+  lint:
+    needs: dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: cachix/install-nix-action@v16
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: set elixir and otp version
+        id: hex-info
+        shell: bash
+        run: |
+          ELIXIR_VERSION=$(nix-shell shell.nix --run "mix hex.info" | sed -n 2p  | awk '{print $2}')
+          OTP_VERSION=$(nix-shell shell.nix --run "mix hex.info" | sed -n 3p  | awk '{print $2}')
+          echo Elixir: $ELIXIR_VERSION
+          echo OTP: $OTP_VERSION
+          echo "::set-output name=otp-version::$OTP_VERSION"
+          echo "::set-output name=elixir-version::$ELIXIR_VERSION"
+
+      - name: Retrieve Mix Dependencies Cache
+        uses: actions/cache@v2
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: my-random-cache-key-1234-${{ runner.os }}-${{ steps.hex-info.outputs.otp-version }}-${{ steps.hex-info.outputs.elixir-version }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
+      - name: Check Formatting
+        run: nix-shell shell.nix --run 'run format.check'
+
+      - name: Restore PLT cache
+        uses: actions/cache@v2
+        id: plt_cache
+        with:
+          key: |
+            ${{ runner.os }}-${{ steps.hex-info.outputs.elixir-version }}-${{ steps.hex-info.outputs.otp-version }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-plt
+          restore-keys: |
+            ${{ runner.os }}-${{ steps.hex-info.outputs.elixir-version }}-${{ steps.hex-info.outputs.otp-version }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-plt
+          path: |
+            priv/plts
+      # Create PLTs if no cache was found
+      - name: Create PLTs
+        if: steps.plt_cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p priv/plts
+          nix-shell shell.nix --run 'run mix dialyzer --plt'
+      - name: Run credo & dialyzer
+        run: nix-shell shell.nix --run 'run lint.all'
+  test:
+    needs: dependencies
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: phoenix_starter_test
+        ports:
+          - 5432/tcp
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: cachix/install-nix-action@v16
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: set elixir and otp version
+        id: hex-info
+        shell: bash
+        run: |
+          ELIXIR_VERSION=$(nix-shell shell.nix --run "mix hex.info" | sed -n 2p  | awk '{print $2}')
+          OTP_VERSION=$(nix-shell shell.nix --run "mix hex.info" | sed -n 3p  | awk '{print $2}')
+          echo Elixir: $ELIXIR_VERSION
+          echo OTP: $OTP_VERSION
+          echo "::set-output name=otp-version::$OTP_VERSION"
+          echo "::set-output name=elixir-version::$ELIXIR_VERSION"
+
+      - name: Retrieve Mix Dependencies Cache
+        uses: actions/cache@v2
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: my-random-cache-key-1234-${{ runner.os }}-${{ steps.hex-info.outputs.otp-version }}-${{ steps.hex-info.outputs.elixir-version }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
+      - name: Install Mix Dependencies
+        if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: |
+          nix-shell shell.nix --run 'run release'
+
+      - name: Run Tests
+        run: |
+          nix-shell shell.nix --run 'run test.migration'
+          nix-shell shell.nix --run 'run test.ci'
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:${{job.services.postgres.ports[5432]}}/phoenix_starter_test

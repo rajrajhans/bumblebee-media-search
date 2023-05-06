@@ -1,0 +1,159 @@
+#!/bin/bash
+
+run_init() {
+  direnv allow
+}
+
+with_dev_env() {
+  eval "$(./bin/env --overload -e .env.dev -e .env.dev.local)"
+}
+
+with_test_env() {
+  eval "$(./bin/env --overload -e .env.test -e .env.test.local)"
+}
+
+run_deps() {
+  mix deps.get
+}
+
+run_compile() {
+  with_dev_env
+  mix compile
+}
+
+run_server() {
+  with_dev_env
+  iex --sname copilot --cookie copilot -S mix phx.server
+}
+
+run_iex() {
+  with_dev_env
+  iex -S mix
+}
+
+run_setup() {
+  run deps
+  run db.setup
+}
+
+run_db.setup() {
+  with_dev_env
+  mix ecto.setup
+}
+
+run_db.create_migration() {
+  with_dev_env
+  mix ecto.gen.migration ${@}
+}
+
+run_db.migrate() {
+  with_dev_env
+  mix ecto.migrate
+}
+
+run_db.rollback() {
+  with_dev_env
+  mix ecto.rollback
+}
+
+run_dev.reset() {
+  with_dev_env
+
+  mix ecto.drop
+  mix ecto.create
+  mix ecto.migrate
+}
+
+run_test.reset() {
+  with_test_env
+  mix ecto.drop
+  mix ecto.create
+  mix ecto.migrate
+}
+
+run_test() {
+  with_test_env
+
+  mix test ${@}
+}
+
+run_test.watch() {
+  with_test_env
+  fswatch -l 0.5 -or --event Updated lib/ test/ | mix test --listen-on-stdin ${@}
+}
+
+run_test.cover() {
+  with_test_env
+  mix test --cover --export-coverage default
+  mix test.coverage
+}
+
+run_test.ci() {
+  mix local.rebar --force
+  mix local.hex --force
+
+  with_test_env
+
+  mix test
+}
+
+run_test.migration() {
+  mix local.rebar --force
+  mix local.hex --force
+
+  with_test_env
+
+  mix ecto.create && mix ecto.migrate && mix ecto.rollback --all
+}
+
+run_format() {
+  mix format
+}
+
+run_format.check() {
+  mix format --dry-run --check-formatted
+}
+
+run_lint() {
+  mix compile --warnings-as-errors --force
+  mix credo --strict
+}
+
+run_lint.all() {
+  run_lint
+  mix dialyzer
+}
+
+run_clean() {
+  mix clean --deps
+  rm -rf .elixir_ls/ _build/
+}
+
+run_delete.phx(){
+  rm -rf mix.exs mix.lock lib deps config assets _build test .formatter.exs priv
+}
+
+run_release() {
+  echo "Executing run_release..."
+  mix local.rebar --force
+  mix local.hex --force
+  mix deps.get
+  mix deps.compile
+}
+
+fn_exists() { declare -F "$1" >/dev/null; }
+
+run() {
+  local cmd=$1
+  shift
+  local fn="run_$cmd"
+
+  if fn_exists $fn; then
+    $fn ${@}
+  else
+    with_dev_env
+    eval $cmd "${@}"
+  fi
+}
+
+run ${@}

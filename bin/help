@@ -1,0 +1,93 @@
+#!/bin/bash
+
+APP_NAME=$(grep -Eo 'app: :\w*' mix.exs | cut -d ':' -f 3)
+APP_VERSION=$(grep -Eo 'version: "[0-9\.]*"' mix.exs | cut -d '"' -f 2)
+GIT_REVISION=$(git rev-parse HEAD)
+
+ORANGE='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+echo -e "${BLUE}Environment${NC}"
+echo -e "${BLUE}---------------------------------------------------------------${NC}"
+printf "${ORANGE}%-35s${NC}" "APP_NAME"
+printf "${PURPLE}%s${NC}" ${APP_NAME}
+echo ""
+printf "${ORANGE}%-35s${NC}" "APP_VERSION"
+printf "${PURPLE}%s${NC}" ${APP_VERSION}
+echo ""
+printf "${ORANGE}%-35s${NC}" "GIT_REVISION"
+printf "${PURPLE}%s${NC}" ${GIT_REVISION}
+echo -e "\n"
+
+echo -e "${BLUE}Commands${NC}"
+echo -e "${BLUE}---------------------------------------------------------------${NC}"
+
+printf "${CYAN}%-35s${NC}" "run [command]"
+printf "%s" "Run any command with dev env loaded"
+echo -e "\n"
+printf "%-35s" ""
+echo -e "(Eg: ${CYAN}run mix ecto.migrate${NC})"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run deps"
+printf "%s" "Install dependencies"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run dev.reset"
+printf "%s" "Reset dev database"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run db.setup"
+printf "%s" "Setup local db"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run db.migrate"
+printf "%s" "Migrate local db"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run db.rollback"
+printf "%s" "Rollback local db"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run db.create_migration <name>"
+printf "%s" "Create new migration script"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run server"
+printf "%s" "Run the server inside an IEx shell"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run test.reset"
+printf "%s" "Reset test database"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run test"
+printf "%s" "Run test"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run test.watch"
+printf "%s" "Run test in watch mode"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run test.cover"
+printf "%s" "Show test coverage"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run format"
+printf "%s" "Format project files"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run lint"
+printf "%s" "Lint project files"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run clean"
+printf "%s" "Remove all Phoenix framework related files"
+echo -e "\n"
+
+printf "${CYAN}%-35s${NC}" "run delete.phx"
+printf "%s" "Remove all Phoenix framework related files"
+echo -e "\n"

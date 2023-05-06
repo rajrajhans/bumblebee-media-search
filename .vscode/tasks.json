@@ -1,0 +1,89 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "run tests",
+      "type": "shell",
+      "command": "run test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceRoot}"
+      },
+      "problemMatcher": [
+        "$mixCompileError",
+        "$mixCompileWarning",
+        "$mixTestFailure"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "run single test",
+      "type": "shell",
+      "command": "run test ${relativeFile}:${lineNumber}",
+      "group": {
+        "kind": "test"
+      },
+      "options": {
+        "cwd": "${workspaceRoot}"
+      },
+      "runOptions": {
+        "reevaluateOnRerun": false
+      },
+      "problemMatcher": [
+        "$mixCompileError",
+        "$mixCompileWarning",
+        "$mixTestFailure"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "run current file tests",
+      "type": "shell",
+      "command": "run test ${relativeFile}",
+      "group": {
+        "kind": "test"
+      },
+      "options": {
+        "cwd": "${workspaceRoot}"
+      },
+      "runOptions": {
+        "reevaluateOnRerun": false
+      },
+      "problemMatcher": [
+        "$mixCompileError",
+        "$mixCompileWarning",
+        "$mixTestFailure"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "start database",
+      "type": "shell",
+      "command": "run db",
+      "options": {
+        "cwd": "${workspaceRoot}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
