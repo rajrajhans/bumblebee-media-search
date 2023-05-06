@@ -7,6 +7,10 @@ defmodule MediaSearchDemo.Application do
 
   @impl true
   def start(_type, _args) do
+    # make sure the model is loaded before starting the app
+    {:ok, clip} = Bumblebee.load_model({:hf, "openai/clip-vit-base-patch32"})
+    {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, "openai/clip-vit-base-patch32"})
+
     children = [
       # Start the Telemetry supervisor
       MediaSearchDemoWeb.Telemetry,
@@ -17,9 +21,14 @@ defmodule MediaSearchDemo.Application do
       # Start Finch
       {Finch, name: MediaSearchDemo.Finch},
       # Start the Endpoint (http/https)
-      MediaSearchDemoWeb.Endpoint
-      # Start a worker by calling: MediaSearchDemo.Worker.start_link(arg)
-      # {MediaSearchDemo.Worker, arg}
+      MediaSearchDemoWeb.Endpoint,
+      {
+        Nx.Serving,
+        serving: MediaSearchDemo.Clip.Text.embeddings(clip, tokenizer),
+        name: MediaSearchDemo.Clip.Text.Serving,
+        batch_size: 10,
+        batch_timeout: 20
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
