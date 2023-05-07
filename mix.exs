@@ -61,7 +61,13 @@ defmodule MediaSearchDemo.MixProject do
       # ML
       {:bumblebee, "~> 0.1.2"},
       {:nx, "~> 0.4.1"},
-      {:exla, "~> 0.4.1"}
+      {:exla, "~> 0.4.1"},
+
+      # Image decoding
+      {:stb_image, "~> 0.6.0"},
+
+      # Similarity Search
+      {:annoy_ex, git: "https://github.com/invideoio/annoy_ex.git", branch: "v1.0.1"}
     ]
   end
 
