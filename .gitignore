@@ -62,3 +62,7 @@ priv/plts/_.plt
 priv/plts/_.plt.hash
 
 .bumblebee/
+
+# images stored
+priv/images/*
+!priv/images/.keep
