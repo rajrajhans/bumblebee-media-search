@@ -16,7 +16,7 @@ let
 
   inputs = basePackages ++ lib.optionals stdenv.isLinux [ inotify-tools ]
     ++ lib.optionals stdenv.isDarwin
-    (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ]);
+    (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices Foundation AppKit ]);
 
   # define shell startup command
   hooks = ''
