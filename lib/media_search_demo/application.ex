@@ -8,9 +8,7 @@ defmodule MediaSearchDemo.Application do
   @impl true
   def start(_type, _args) do
     # make sure the model is loaded before starting the app
-    {:ok, clip} = Bumblebee.load_model({:hf, "openai/clip-vit-base-patch32"})
-    {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, "openai/clip-vit-base-patch32"})
-    {:ok, featurizer} = Bumblebee.load_featurizer({:hf, "openai/clip-vit-base-patch32"})
+    Bumblebee.load_model({:hf, "openai/clip-vit-base-patch32"})
 
     children = [
       # Start the Telemetry supervisor
@@ -23,19 +21,7 @@ defmodule MediaSearchDemo.Application do
       {Finch, name: MediaSearchDemo.Finch},
       # Start the Endpoint (http/https)
       MediaSearchDemoWeb.Endpoint,
-      {
-        Nx.Serving,
-        serving: MediaSearchDemo.Clip.Text.embeddings(clip, tokenizer),
-        name: MediaSearchDemo.Clip.Text.Serving,
-        batch_size: 10,
-        batch_timeout: 20
-      },
-      {
-        Nx.Serving,
-        serving: MediaSearchDemo.Clip.Image.embeddings(clip, featurizer),
-        name: MediaSearchDemo.Clip.Image.Serving,
-        batch_timeout: 20
-      }
+      MediaSearchDemo.Clip.ModelAgent
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
