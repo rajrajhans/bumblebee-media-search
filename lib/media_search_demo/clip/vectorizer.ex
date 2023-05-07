@@ -6,16 +6,15 @@ defmodule MediaSearchDemo.Vectorizer do
   require Logger
   alias MediaSearchDemo.Clip.ModelAgent
 
-  @type ok_tuple :: {:ok, any()}
   @type error_tuple :: {:error, any()}
 
-  @spec vectorize_text(String.t()) :: ok_tuple | error_tuple
+  @spec vectorize_text(String.t()) :: {:ok, Nx.Tensor.t()} | error_tuple
   def vectorize_text(text) do
     # todo -> explore using a custom Nx serving instead of agent
 
     tokenizer = ModelAgent.get_tokenizer()
     model = ModelAgent.get_text_model()
-    params = ModelAgent.get_image_params()
+    params = ModelAgent.get_text_params()
 
     tokenizer_output = Bumblebee.apply_tokenizer(tokenizer, [text])
 
@@ -23,7 +22,7 @@ defmodule MediaSearchDemo.Vectorizer do
 
     # todo -> explore using the last hidden state instead of the pooled state (or mean of all hidden states)
     # todo -> explore normalizing the pooled state tensor
-    predict_out.pooled_state |> Nx.to_flat_list()
+    {:ok, predict_out.pooled_state}
   rescue
     e ->
       Logger.error("[VECTORIZER] failed to vectorize text: #{inspect(e)}")
@@ -31,7 +30,7 @@ defmodule MediaSearchDemo.Vectorizer do
       {:error, :vectorize_text_error}
   end
 
-  @spec vectorize_image(binary()) :: ok_tuple | error_tuple
+  @spec vectorize_image(binary()) :: {:ok, Nx.Tensor.t()} | error_tuple
   def vectorize_image(image_data) do
     with {:ok, image} <- StbImage.read_binary(image_data) do
       try do
@@ -47,7 +46,7 @@ defmodule MediaSearchDemo.Vectorizer do
 
         # todo -> explore using the last hidden state instead of the pooled state (or mean of all hidden states)
         # todo -> explore normalizing the pooled state tensor
-        {:ok, predict_out.pooled_state |> Nx.to_flat_list()}
+        {:ok, predict_out}
       rescue
         e ->
           Logger.error("[VECTORIZER] failed to vectorize image: #{inspect(e)}")
