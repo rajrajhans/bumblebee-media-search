@@ -47,7 +47,7 @@ defmodule MediaSearchDemo.Vectorizer do
 
         # todo -> explore using the last hidden state instead of the pooled state (or mean of all hidden states)
         # todo -> explore normalizing the pooled state tensor
-        predict_out.pooled_state |> Nx.to_flat_list()
+        {:ok, predict_out.pooled_state |> Nx.to_flat_list()}
       rescue
         e ->
           Logger.error("[VECTORIZER] failed to vectorize image: #{inspect(e)}")

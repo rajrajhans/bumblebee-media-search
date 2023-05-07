@@ -66,3 +66,5 @@ priv/plts/_.plt.hash
 # images stored
 priv/images/*
 !priv/images/.keep
+priv/clip_index.ann
+priv/clip_index_filenames.json

@@ -6,7 +6,9 @@ defmodule MediaSearchDemo.ANN do
 
   @doc """
   Build an index from a list of vectors.
-  Arg -> list of {vector, index} tuples
+  Args:
+  size -> size of each vector
+  vectors_with_index -> list of {vector, index} tuples
   """
   @spec build_index(integer(), list()) :: {:ok, reference()} | {:error, any()}
   def build_index(size, vectors_with_index) do
