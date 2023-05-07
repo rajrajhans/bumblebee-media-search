@@ -8,6 +8,7 @@ defmodule MediaSearchDemo.ANN do
   Build an index from a list of vectors.
   Arg -> list of {vector, index} tuples
   """
+  @spec build_index(integer(), list()) :: {:ok, reference()} | {:error, any()}
   def build_index(size, vectors_with_index) do
     n = length(vectors_with_index)
     Logger.debug("[ANN] Building index with #{n} vectors")
@@ -18,11 +19,39 @@ defmodule MediaSearchDemo.ANN do
     end)
 
     :ok = AnnoyEx.build(ann_index, 10, -1)
-    ann_index
+    {:ok, ann_index}
   rescue
     e ->
       Logger.error("[ANN] Failed to build index: #{inspect(e)}")
       {:error, :build_index_failed}
+  end
+
+  @doc """
+  Save an index to given file path.
+  """
+  @spec save_index(reference(), String.t()) :: :ok | {:error, any()}
+  def save_index(ann_index, path) do
+    Logger.debug("[ANN] Saving index to #{path}")
+    :ok = AnnoyEx.save(ann_index, path)
+  rescue
+    e ->
+      Logger.error("[ANN] Failed to save index: #{inspect(e)}")
+      {:error, :save_index_failed}
+  end
+
+  @doc """
+  Load an index from given file path.
+  """
+  @spec load_index(String.t(), integer()) :: {:ok, reference()} | {:error, any()}
+  def load_index(path, size) do
+    Logger.debug("[ANN] Loading index from #{path}")
+    ann_index = AnnoyEx.new(size, :angular)
+    AnnoyEx.load(ann_index, path)
+    {:ok, ann_index}
+  rescue
+    e ->
+      Logger.error("[ANN] Failed to load index: #{inspect(e)}")
+      {:error, :load_index_failed}
   end
 
   @doc """
