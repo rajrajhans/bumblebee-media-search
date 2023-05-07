@@ -1,26 +1,25 @@
 defmodule MediaSearchDemo.ANN do
   @moduledoc """
-  Module for performing ANN similarity search using Annoy.
+  Module for performing ANN similarity search using HNSWLib.
   """
   require Logger
 
   @doc """
-  Build an index from a list of vectors.
+  Build an index from a list of tensors.
   Args:
-  size -> size of each vector
-  vectors_with_index -> list of {vector, index} tuples
+  dimension -> dimension of each tensor
+  tensors_with_index -> list of {Nx.tensor, index} tuples
   """
-  @spec build_index(integer(), list()) :: {:ok, reference()} | {:error, any()}
-  def build_index(size, vectors_with_index) do
-    n = length(vectors_with_index)
-    Logger.debug("[ANN] Building index with #{n} vectors")
-    ann_index = AnnoyEx.new(size, :angular)
+  @spec build_index(integer(), list(Nx.Tensor.t())) :: {:ok, reference()} | {:error, any()}
+  def build_index(dimension, tensors) do
+    n = length(tensors)
+    Logger.debug("[ANN] Building index with #{n} tensors")
+    {:ok, ann_index} = HNSWLib.Index.new(:cosine, dimension, 100_000)
 
-    Enum.each(vectors_with_index, fn {vector, i} ->
-      AnnoyEx.add_item(ann_index, i, vector)
+    Enum.each(tensors, fn tensor ->
+      HNSWLib.Index.add_items(ann_index, tensor)
     end)
 
-    :ok = AnnoyEx.build(ann_index, 10, -1)
     {:ok, ann_index}
   rescue
     e ->
@@ -34,7 +33,7 @@ defmodule MediaSearchDemo.ANN do
   @spec save_index(reference(), String.t()) :: :ok | {:error, any()}
   def save_index(ann_index, path) do
     Logger.debug("[ANN] Saving index to #{path}")
-    :ok = AnnoyEx.save(ann_index, path)
+    HNSWLib.Index.save_index(ann_index, path)
   rescue
     e ->
       Logger.error("[ANN] Failed to save index: #{inspect(e)}")
@@ -45,11 +44,9 @@ defmodule MediaSearchDemo.ANN do
   Load an index from given file path.
   """
   @spec load_index(String.t(), integer()) :: {:ok, reference()} | {:error, any()}
-  def load_index(path, size) do
+  def load_index(path, dimension) do
     Logger.debug("[ANN] Loading index from #{path}")
-    ann_index = AnnoyEx.new(size, :angular)
-    AnnoyEx.load(ann_index, path)
-    {:ok, ann_index}
+    HNSWLib.Index.load_index(:cosine, dimension, path)
   rescue
     e ->
       Logger.error("[ANN] Failed to load index: #{inspect(e)}")
@@ -57,18 +54,16 @@ defmodule MediaSearchDemo.ANN do
   end
 
   @doc """
-  Given a ANN_INDEX and a vector, return the approximate nearest neighbor.
+  Given a ANN_INDEX and a query_tensor, return the approximate nearest neighbor.
   """
   @spec get_nearest_neighbors(
-          ann_index :: reference(),
-          input_embedding :: list(),
-          n :: pos_integer()
+          ann_index :: any(),
+          query_tensor :: Nx.Tensor.t(),
+          n :: any()
         ) :: {:ok, list(), list()} | {:error, any()}
-  def get_nearest_neighbors(ann_index, vector, n) do
-    Logger.debug("[ANN] Getting nearest neighbors for vector")
-    {ids, distances} = AnnoyEx.get_nns_by_vector(ann_index, vector, n, -1, true)
-
-    {:ok, {ids, distances}}
+  def get_nearest_neighbors(ann_index, query_tensor, n) do
+    Logger.debug("[ANN] Getting nearest neighbors for tensor")
+    HNSWLib.Index.knn_query(ann_index, query_tensor, k: n)
   rescue
     e ->
       Logger.error("[ANN] Failed to get nearest neighbors: #{inspect(e)}]")

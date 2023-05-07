@@ -36,6 +36,7 @@ defmodule MediaSearchDemo.ClipIndex do
     # vectorize each image, and create a tuple with {vector, file_name} for each image
     vectors_with_file_name =
       Enum.map(all_images, fn image_file_name ->
+        Logger.debug("[CLIP_INDEX] Indexing image #{image_file_name}")
         image_path = Path.join(image_directory, image_file_name)
         image_data = File.read!(image_path)
 
@@ -53,16 +54,10 @@ defmodule MediaSearchDemo.ClipIndex do
       end)
       |> Enum.reject(&is_nil/1)
 
-    vectors_with_index =
-      vectors_with_file_name
-      |> Enum.with_index()
-      |> Enum.map(fn {{vector, _filename}, i} ->
-        {vector, i}
-      end)
-
+    vectors = Enum.map(vectors_with_file_name, fn {vector, _filename} -> vector end)
     filenames = Enum.map(vectors_with_file_name, fn {_vector, filename} -> filename end)
 
-    with {:ok, ann_index} <- ANN.build_index(@clip_embedding_size, vectors_with_index) do
+    with {:ok, ann_index} <- ANN.build_index(@clip_embedding_size, vectors) do
       ANN.save_index(ann_index, ann_index_save_path)
       File.write!(filenames_save_path, Jason.encode!(filenames))
 
