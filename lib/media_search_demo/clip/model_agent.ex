@@ -18,10 +18,26 @@ defmodule MediaSearchDemo.Clip.ModelAgent do
         architecture: :base
       )
 
-    {:ok, %{model: image_model, params: image_params, spec: _spec}} =
+    {:ok, %{model: vision_model, params: vision_params, spec: _vision_spec}} =
       Bumblebee.load_model({:hf, @hf_model},
         module: Bumblebee.Vision.ClipVision,
         architecture: :base
+      )
+
+    {:ok, %{model: _multimodal_model, params: multimodal_params, spec: _multimodal_spec}} =
+      Bumblebee.load_model({:hf, @hf_model},
+        architecture: :base
+      )
+
+    image_params =
+      put_in(vision_params["visual_projection"], multimodal_params["visual_projection"])
+
+    vision_model_with_projection_head =
+      vision_model
+      |> Axon.nx(& &1.pooled_state)
+      |> Axon.dense(512,
+        use_bias: false,
+        name: "visual_projection"
       )
 
     {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, @hf_model})
@@ -33,7 +49,7 @@ defmodule MediaSearchDemo.Clip.ModelAgent do
         %{
           text_model: text_model,
           text_params: text_params,
-          image_model: image_model,
+          image_model: vision_model_with_projection_head,
           image_params: image_params,
           tokenizer: tokenizer,
           featurizer: featurizer
