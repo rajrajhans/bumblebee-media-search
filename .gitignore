@@ -56,10 +56,7 @@ npm-debug.log
 # intellij
 .idea
 
-# dialyzer
 
-priv/plts/_.plt
-priv/plts/_.plt.hash
 
 .bumblebee/
 
@@ -68,3 +65,8 @@ priv/images/*
 !priv/images/.keep
 priv/clip_index.ann
 priv/clip_index_filenames.json
+
+# dialyzer
+
+priv/plts/*.plt
+priv/plts/*.plt.hash
