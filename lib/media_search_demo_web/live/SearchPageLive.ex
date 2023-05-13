@@ -21,7 +21,7 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
     ~H"""
     <div class="container">
       <div class="row">
-        <form phx-submit="set-search-query" class="pb-6 pb-8 mb-4">
+        <form phx-submit="set-search-query" class="pb-2">
           <div class="mb-4 flex items-center gap-10">
             <input
               class="shadow appearance-none border border-gray-400 rounded flex-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -52,12 +52,15 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
           <h2 class="font-medium text-xl mb-5">
             Search results for <span class="text-blue-800">"<%= @search_query %>"</span>
           </h2>
+          <p class="mb-5 text-gray-600 text-sm">
+            The number in the bottom right corner of each image represents the cosine distance between the search query and the image. The lower the distance, the more similar the image is to the search query.
+          </p>
           <div class="flex flex-wrap gap-y-8 gap-x-6">
             <%= for search_result <- @search_results do %>
               <div class="flex flex-col w-80 gap-y-2 hover:bg-gray-100 py-4 px-3 rounded-md">
                 <div class="relative bg-gray-100 flex items-center justify-center">
                   <img
-                    class="rounded-md min-h-[200px] object-cover"
+                    class="rounded-md h-[200px] object-cover"
                     src={"#{search_result.url}"}
                     alt="stock-media"
                   />
