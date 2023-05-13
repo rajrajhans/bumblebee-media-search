@@ -21,7 +21,7 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
     )
   end
 
-  @spec get_ann_index() :: reference() | nil
+  @spec get_ann_index() :: %HNSWLib.Index{dim: term, reference: term, space: term} | nil
   def get_ann_index() do
     Agent.get(__MODULE__, fn state -> state.ann_index end)
   end

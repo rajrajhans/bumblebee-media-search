@@ -27,6 +27,7 @@ defmodule MediaSearchDemo.Clip.Index do
   - filenames_save_path -> where to save the list of filenames, defaults to priv/clip_index_filenames.json
   - image_directory -> directory containing the images, defaults to priv/images
   """
+  @dialyzer {:nowarn_function, build_index: 3}
   def build_index(
         ann_index_save_path \\ Constants.default_ann_index_save_path(),
         filenames_save_path \\ Constants.default_filenames_save_path(),
@@ -71,6 +72,7 @@ defmodule MediaSearchDemo.Clip.Index do
       {:error, :build_index_failed}
   end
 
+  @dialyzer {:nowarn_function, search_index: 1}
   @spec search_index(String.t()) :: {:ok, list(search_result)} | {:error, any()}
   def search_index(query) do
     Logger.debug("[CLIP_INDEX] Searching index for query #{query}")
@@ -79,8 +81,7 @@ defmodule MediaSearchDemo.Clip.Index do
     filenames = ClipIndexAgent.get_filenames()
 
     with {:ok, query_vector} <- Vectorizer.vectorize_text(query),
-         {:ok, labels, dists} <-
-           ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
+         {:ok, labels, dists} <- ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
       result_indices = labels |> Nx.to_flat_list()
       distances = dists |> Nx.to_flat_list()
 
@@ -109,6 +110,7 @@ defmodule MediaSearchDemo.Clip.Index do
     end
   end
 
+  @dialyzer {:nowarn_function, get_url_from_file_name: 1}
   defp get_url_from_file_name(file_name) do
     "/static/#{file_name}"
   end

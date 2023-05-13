@@ -88,6 +88,7 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
      |> assign(search_results: [])}
   end
 
+  @dialyzer {:nowarn_function, handle_info: 2}
   def handle_info({:search, search_query}, socket) do
     Logger.info("Searching for #{search_query}")
 
