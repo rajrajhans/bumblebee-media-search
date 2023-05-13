@@ -52,7 +52,7 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
     end
   end
 
-  @spec init_ann_index(Keyword.t()) :: reference() | nil
+  @spec init_ann_index(Keyword.t()) :: {:ok, reference()} | {:ok, nil}
   def init_ann_index(opts) do
     try do
       ann_index_path =
@@ -70,7 +70,7 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
           "[CLIP_INDEX] Index file not found at #{ann_index_path}. Starting without index."
         )
 
-        nil
+        {:ok, nil}
       end
     rescue
       e ->
