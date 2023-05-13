@@ -1,7 +1,6 @@
 defmodule MediaSearchDemoWeb.SearchPageLive do
   use MediaSearchDemoWeb, :live_view
   alias MediaSearchDemo.Clip.Index
-  alias MediaSearchDemo.Constants
   require Logger
 
   def mount(_params, _session, socket) do
@@ -59,9 +58,12 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
                 <div class="relative bg-gray-100 flex items-center justify-center">
                   <img
                     class="rounded-md min-h-[200px] object-cover"
-                    src={"#{search_result}"}
+                    src={"#{search_result.url}"}
                     alt="stock-media"
                   />
+                  <p class="absolute bottom-0 right-0 bg-gray-800 text-gray-400 text-xs font-semibold px-2 py-1 rounded-md">
+                    <%= Float.round(search_result.distance, 2) %>
+                  </p>
                 </div>
               </div>
             <% end %>
@@ -86,18 +88,13 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
   def handle_info({:search, search_query}, socket) do
     Logger.info("Searching for #{search_query}")
 
-    with {:ok, results} <- Index.search_index(search_query),
-         result_urls <- Enum.map(results, fn result -> get_url_from_file_name(result) end) do
-      {:noreply, socket |> assign(is_searching: false) |> assign(search_results: result_urls)}
+    with {:ok, search_results} <- Index.search_index(search_query) do
+      {:noreply, socket |> assign(is_searching: false) |> assign(search_results: search_results)}
     else
       e ->
         Logger.error("[SEARCH_PAGE] Failed to search index: #{inspect(e)}")
         # todo -> show toast
         {:noreply, socket |> assign(is_searching: false) |> assign(error: "Search Failed")}
     end
-  end
-
-  defp get_url_from_file_name(file_name) do
-    "/static/#{file_name}"
   end
 end

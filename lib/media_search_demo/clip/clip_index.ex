@@ -13,6 +13,12 @@ defmodule MediaSearchDemo.Clip.Index do
   alias MediaSearchDemo.Constants
   alias MediaSearchDemo.Clip.ClipIndexAgent
 
+  @type search_result :: %{
+          filename: String.t(),
+          distance: float(),
+          url: String.t()
+        }
+
   @doc """
   Builds the clip index from the images in the image directory, and saves the index and filenames to disk. (The filenames array is used to map from ANN result to filename while searching)
 
@@ -65,6 +71,7 @@ defmodule MediaSearchDemo.Clip.Index do
       {:error, :build_index_failed}
   end
 
+  @spec search_index(String.t()) :: {:ok, list(search_result)} | {:error, any()}
   def search_index(query) do
     Logger.debug("[CLIP_INDEX] Searching index for query #{query}")
 
@@ -72,21 +79,37 @@ defmodule MediaSearchDemo.Clip.Index do
     filenames = ClipIndexAgent.get_filenames()
 
     with {:ok, query_vector} <- Vectorizer.vectorize_text(query),
-         {:ok, labels, _dists} <-
-           ANN.get_nearest_neighbors(ann_index_reference, query_vector, 2) do
+         {:ok, labels, dists} <-
+           ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
       result_indices = labels |> Nx.to_flat_list()
+      distances = dists |> Nx.to_flat_list()
 
-      result_filenames =
-        Enum.map(result_indices, fn index ->
-          filenames |> Enum.at(index)
+      search_results =
+        result_indices
+        |> Enum.with_index()
+        |> Enum.map(fn {result_index, i} ->
+          # result index is the index of the image in filenames
+          # i is the index of the result in the result_indices list
+
+          filename = filenames |> Enum.at(result_index)
+
+          %{
+            filename: filename,
+            url: get_url_from_file_name(filename),
+            distance: distances |> Enum.at(i)
+          }
         end)
 
-      {:ok, result_filenames}
+      {:ok, search_results}
     else
       {:error, reason} ->
         Logger.error("[CLIP_INDEX] Failed to search index: #{inspect(reason)}")
 
         {:error, :search_index_failed}
     end
+  end
+
+  defp get_url_from_file_name(file_name) do
+    "/static/#{file_name}"
   end
 end
