@@ -11,6 +11,7 @@ defmodule MediaSearchDemo.Clip.Index do
   alias MediaSearchDemo.Vectorizer
   alias MediaSearchDemo.ANN
   alias MediaSearchDemo.Constants
+  alias MediaSearchDemo.Clip.ClipIndexAgent
 
   @doc """
   Builds the clip index from the images in the image directory, and saves the index and filenames to disk. (The filenames array is used to map from ANN result to filename while searching)
@@ -64,12 +65,15 @@ defmodule MediaSearchDemo.Clip.Index do
       {:error, :build_index_failed}
   end
 
-  def search_index(query, ann_index_reference, filenames) do
+  def search_index(query) do
     Logger.debug("[CLIP_INDEX] Searching index for query #{query}")
+
+    ann_index_reference = ClipIndexAgent.get_ann_index()
+    filenames = ClipIndexAgent.get_filenames()
 
     with {:ok, query_vector} <- Vectorizer.vectorize_text(query),
          {:ok, labels, _dists} <-
-           ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
+           ANN.get_nearest_neighbors(ann_index_reference, query_vector, 2) do
       result_indices = labels |> Nx.to_flat_list()
 
       result_filenames =
@@ -78,6 +82,11 @@ defmodule MediaSearchDemo.Clip.Index do
         end)
 
       {:ok, result_filenames}
+    else
+      {:error, reason} ->
+        Logger.error("[CLIP_INDEX] Failed to search index: #{inspect(reason)}")
+
+        {:error, :search_index_failed}
     end
   end
 end
