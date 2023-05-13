@@ -8,7 +8,7 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
 
   def start_link(opts) do
     filenames = init_filenames(opts)
-    ann_index = init_ann_index(opts)
+    {:ok, ann_index} = init_ann_index(opts)
 
     Agent.start_link(
       fn ->
@@ -21,14 +21,17 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
     )
   end
 
+  @spec get_ann_index() :: reference() | nil
   def get_ann_index() do
     Agent.get(__MODULE__, fn state -> state.ann_index end)
   end
 
+  @spec get_filenames() :: list(String.t())
   def get_filenames() do
     Agent.get(__MODULE__, fn state -> state.filenames end)
   end
 
+  @spec init_filenames(Keyword.t()) :: list(String.t())
   def init_filenames(opts) do
     try do
       filenames_path =
@@ -49,6 +52,7 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
     end
   end
 
+  @spec init_ann_index(Keyword.t()) :: reference() | nil
   def init_ann_index(opts) do
     try do
       ann_index_path =
