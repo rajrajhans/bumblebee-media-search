@@ -5,6 +5,7 @@ defmodule MediaSearchDemo.Clip.ModelAgent do
 
   use Agent
   require Logger
+  alias MediaSearchDemo.Constants
 
   @hf_model "openai/clip-vit-base-patch32"
 
@@ -12,33 +13,15 @@ defmodule MediaSearchDemo.Clip.ModelAgent do
   def start_link(_opts) do
     Logger.info("[MODEL_AGENT] Starting model agent. Loading model #{@hf_model} ...")
 
-    {:ok, %{model: text_model, params: text_params, spec: _spec}} =
-      Bumblebee.load_model({:hf, @hf_model},
-        module: Bumblebee.Text.ClipText,
-        architecture: :base
-      )
-
-    {:ok, %{model: vision_model, params: vision_params, spec: _vision_spec}} =
-      Bumblebee.load_model({:hf, @hf_model},
-        module: Bumblebee.Vision.ClipVision,
-        architecture: :base
-      )
-
     {:ok, %{model: _multimodal_model, params: multimodal_params, spec: _multimodal_spec}} =
       Bumblebee.load_model({:hf, @hf_model},
         architecture: :base
       )
 
-    image_params =
-      put_in(vision_params["visual_projection"], multimodal_params["visual_projection"])
+    %{model: text_model, params: text_params} = init_text(multimodal_params["text_projection"])
 
-    vision_model_with_projection_head =
-      vision_model
-      |> Axon.nx(& &1.pooled_state)
-      |> Axon.dense(512,
-        use_bias: false,
-        name: "visual_projection"
-      )
+    %{model: vision_model, params: vision_params} =
+      init_vision(multimodal_params["visual_projection"])
 
     {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, @hf_model})
 
@@ -49,14 +32,59 @@ defmodule MediaSearchDemo.Clip.ModelAgent do
         %{
           text_model: text_model,
           text_params: text_params,
-          image_model: vision_model_with_projection_head,
-          image_params: image_params,
+          image_model: vision_model,
+          image_params: vision_params,
           tokenizer: tokenizer,
           featurizer: featurizer
         }
       end,
       name: __MODULE__
     )
+  end
+
+  def init_vision(visual_projection_params) do
+    {:ok, %{model: vision_model, params: vision_params, spec: _vision_spec}} =
+      Bumblebee.load_model({:hf, @hf_model},
+        module: Bumblebee.Vision.ClipVision,
+        architecture: :base
+      )
+
+    vision_model_with_projection_head =
+      vision_model
+      |> Axon.nx(& &1.pooled_state)
+      |> Axon.dense(Constants.clip_embedding_size(),
+        use_bias: false,
+        name: "visual_projection"
+      )
+
+    vision_params_with_visual_projection =
+      put_in(vision_params["visual_projection"], visual_projection_params)
+
+    %{
+      model: vision_model_with_projection_head,
+      params: vision_params_with_visual_projection
+    }
+  end
+
+  def init_text(text_projection_params) do
+    {:ok, %{model: text_model, params: text_params, spec: _spec}} =
+      Bumblebee.load_model({:hf, @hf_model},
+        module: Bumblebee.Text.ClipText,
+        architecture: :base
+      )
+
+    text_model_with_projection_head =
+      text_model
+      |> Axon.nx(& &1.pooled_state)
+      |> Axon.dense(512, use_bias: false, name: "text_projection")
+
+    text_params_with_text_projection =
+      put_in(text_params["text_projection"], text_projection_params)
+
+    %{
+      model: text_model_with_projection_head,
+      params: text_params_with_text_projection
+    }
   end
 
   def get_text_model() do

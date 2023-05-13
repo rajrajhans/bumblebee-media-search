@@ -22,7 +22,7 @@ defmodule MediaSearchDemo.Vectorizer do
 
     # todo -> explore using the last hidden state instead of the pooled state (or mean of all hidden states)
     # todo -> explore normalizing the pooled state tensor
-    {:ok, predict_out.pooled_state}
+    {:ok, predict_out}
   rescue
     e ->
       Logger.error("[VECTORIZER] failed to vectorize text: #{inspect(e)}")
