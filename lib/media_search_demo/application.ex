@@ -21,7 +21,8 @@ defmodule MediaSearchDemo.Application do
       {Finch, name: MediaSearchDemo.Finch},
       # Start the Endpoint (http/https)
       MediaSearchDemoWeb.Endpoint,
-      MediaSearchDemo.Clip.ModelAgent
+      MediaSearchDemo.Clip.ModelAgent,
+      MediaSearchDemo.Clip.ClipIndexAgent
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

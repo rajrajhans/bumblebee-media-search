@@ -1,4 +1,4 @@
-defmodule MediaSearchDemo.ClipIndex do
+defmodule MediaSearchDemo.Clip.Index do
   @moduledoc """
   Module for building and searching the clip index.
 
@@ -10,9 +10,7 @@ defmodule MediaSearchDemo.ClipIndex do
 
   alias MediaSearchDemo.Vectorizer
   alias MediaSearchDemo.ANN
-
-  @image_directory Application.app_dir(:media_search_demo, "priv/images")
-  @clip_embedding_size 512
+  alias MediaSearchDemo.Constants
 
   @doc """
   Builds the clip index from the images in the image directory, and saves the index and filenames to disk. (The filenames array is used to map from ANN result to filename while searching)
@@ -23,12 +21,9 @@ defmodule MediaSearchDemo.ClipIndex do
   - image_directory -> directory containing the images, defaults to priv/images
   """
   def build_index(
-        ann_index_save_path \\ Application.app_dir(:media_search_demo, "priv/clip_index.ann"),
-        filenames_save_path \\ Application.app_dir(
-          :media_search_demo,
-          "priv/clip_index_filenames.json"
-        ),
-        image_directory \\ @image_directory
+        ann_index_save_path \\ Constants.default_ann_index_save_path(),
+        filenames_save_path \\ Constants.default_filenames_save_path(),
+        image_directory \\ Constants.default_image_directory()
       ) do
     # list images in image directory
     all_images = File.ls!(image_directory) |> Enum.reject(&(&1 |> String.starts_with?(".")))
@@ -57,7 +52,7 @@ defmodule MediaSearchDemo.ClipIndex do
     vectors = Enum.map(vectors_with_file_name, fn {vector, _filename} -> vector end)
     filenames = Enum.map(vectors_with_file_name, fn {_vector, filename} -> filename end)
 
-    with {:ok, ann_index} <- ANN.build_index(@clip_embedding_size, vectors) do
+    with {:ok, ann_index} <- ANN.build_index(Constants.clip_embedding_size(), vectors) do
       ANN.save_index(ann_index, ann_index_save_path)
       File.write!(filenames_save_path, Jason.encode!(filenames))
 
@@ -67,5 +62,25 @@ defmodule MediaSearchDemo.ClipIndex do
     e ->
       Logger.error("[CLIP_INDEX] Failed to build index: #{inspect(e)}")
       {:error, :build_index_failed}
+  end
+
+  def search_index(query, ann_index_reference, filenames) do
+    Logger.debug("[CLIP_INDEX] Searching index for query #{query}")
+
+    with {:ok, query_vector} <- Vectorizer.vectorize_text(query),
+         {:ok, labels, dists} <-
+           ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
+      result_indices = labels |> Nx.to_flat_list()
+
+      IO.inspect(result_indices)
+      IO.inspect(dists)
+
+      result_filenames =
+        Enum.map(result_indices, fn index ->
+          filenames |> Enum.at(index)
+        end)
+
+      {:ok, result_filenames}
+    end
   end
 end
