@@ -17,7 +17,9 @@ defmodule MediaSearchDemoWeb.Router do
   scope "/", MediaSearchDemoWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", SearchPageLive, :index
+
+    get "/phoenix", PageController, :home
   end
 
   # Other scopes may use custom stacks.
