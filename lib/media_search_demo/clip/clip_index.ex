@@ -68,12 +68,9 @@ defmodule MediaSearchDemo.Clip.Index do
     Logger.debug("[CLIP_INDEX] Searching index for query #{query}")
 
     with {:ok, query_vector} <- Vectorizer.vectorize_text(query),
-         {:ok, labels, dists} <-
+         {:ok, labels, _dists} <-
            ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
       result_indices = labels |> Nx.to_flat_list()
-
-      IO.inspect(result_indices)
-      IO.inspect(dists)
 
       result_filenames =
         Enum.map(result_indices, fn index ->

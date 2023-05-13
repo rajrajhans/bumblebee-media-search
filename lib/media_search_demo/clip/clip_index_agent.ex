@@ -41,7 +41,10 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
       File.read!(filenames_path) |> Jason.decode!()
     rescue
       e ->
-        Logger.error("[CLIP_INDEX] Failed to load filenames: #{inspect(e)}")
+        Logger.info(
+          "[CLIP_INDEX] Failed to load filenames: #{inspect(e)}. Starting without index."
+        )
+
         []
     end
   end
@@ -51,13 +54,23 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
       ann_index_path =
         opts |> Keyword.get(:ann_index_path, Constants.default_ann_index_save_path())
 
-      ANN.load_index(
-        ann_index_path,
-        Constants.clip_embedding_size()
-      )
+      index_file_exists = File.exists?(ann_index_path)
+
+      if index_file_exists do
+        ANN.load_index(
+          ann_index_path,
+          Constants.clip_embedding_size()
+        )
+      else
+        Logger.info(
+          "[CLIP_INDEX] Index file not found at #{ann_index_path}. Starting without index."
+        )
+
+        nil
+      end
     rescue
       e ->
-        Logger.error("[CLIP_INDEX] Failed to load index: #{inspect(e)}")
+        Logger.info("[CLIP_INDEX] Failed to load index: #{inspect(e)}. Starting without index.")
         nil
     end
   end
