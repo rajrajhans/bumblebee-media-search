@@ -70,3 +70,6 @@ priv/clip_index_filenames.json
 
 priv/plts/*.plt
 priv/plts/*.plt.hash
+
+# unsplash dataset file
+priv/photos.tsv000
