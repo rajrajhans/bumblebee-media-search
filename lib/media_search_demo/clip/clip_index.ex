@@ -31,7 +31,7 @@ defmodule MediaSearchDemo.Clip.Index do
   def build_index(
         ann_index_save_path \\ Application.get_env(:media_search_demo, :ann_index_save_path),
         filenames_save_path \\ Application.get_env(:media_search_demo, :filenames_save_path),
-        image_directory \\ Application.get_env(:media_search_demo, :clip_embedding_dimension)
+        image_directory \\ Application.get_env(:media_search_demo, :image_directory)
       ) do
     # list images in image directory
     all_images = File.ls!(image_directory) |> Enum.reject(&(&1 |> String.starts_with?(".")))
