@@ -118,8 +118,8 @@ config :media_search_demo,
   # the dimension of the embedding vector
   clip_embedding_dimension: 512,
   # directory where images are stored
-  image_directory: "priv/images",
+  image_directory: Application.app_dir(:media_search_demo, "priv/images"),
   # path to save the "filenames" array
-  filenames_save_path: "priv/clip_index_filenames.json",
+  filenames_save_path: Application.app_dir(:media_search_demo, "priv/clip_index_filenames.json"),
   # path to save the clip index (the embeddings)
-  ann_index_save_path: "priv/clip_index.ann"
+  ann_index_save_path: Application.app_dir(:media_search_demo, "priv/clip_index.ann")

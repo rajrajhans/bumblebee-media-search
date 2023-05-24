@@ -90,9 +90,6 @@ ENV BUMBLEBEE_CACHE_DIR="/app/.bumblebee"
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/media_search_demo ./
 COPY --from=builder --chown=nobody:root /app/.bumblebee/ ./.bumblebee
-COPY --from=builder --chown=nobody:root /app/priv/images ./priv/images
-COPY --from=builder --chown=nobody:root /app/priv/clip_index.ann ./priv/clip_index.ann
-COPY --from=builder --chown=nobody:root /app/priv/clip_index_filenames.json ./priv/clip_index_filenames.json
 
 USER nobody
 
