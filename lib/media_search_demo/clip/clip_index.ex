@@ -85,16 +85,41 @@ defmodule MediaSearchDemo.Clip.Index do
       {:error, :build_index_failed}
   end
 
-  @dialyzer {:nowarn_function, search_index: 1}
-  @spec search_index(String.t()) :: {:ok, list(search_result)} | {:error, any()}
-  def search_index(query) do
+  @dialyzer {:nowarn_function, search_index_with_text: 1}
+  @spec search_index_with_text(String.t()) :: {:ok, list(search_result)} | {:error, any()}
+  def search_index_with_text(query) do
     Logger.debug("[CLIP_INDEX] Searching index for query #{query}")
 
+    with {:ok, query_vector} <- Vectorizer.vectorize_text(query),
+         {:ok, search_results} <- search_index_with_tensor(query_vector) do
+      {:ok, search_results}
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  @dialyzer {:nowarn_function, search_index_with_image: 1}
+  @spec search_index_with_image(binary()) :: {:ok, list(search_result)} | {:error, any()}
+  def search_index_with_image(query_image) do
+    Logger.debug("[CLIP_INDEX] Searching index with image")
+
+    with {:ok, query_vector} <- Vectorizer.vectorize_image(query_image),
+         {:ok, search_results} <- search_index_with_tensor(query_vector) do
+      {:ok, search_results}
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  @dialyzer {:nowarn_function, search_index_with_tensor: 1}
+  @spec search_index_with_tensor(Nx.Tensor.t()) :: {:ok, list(search_result)} | {:error, any()}
+  def search_index_with_tensor(query_vector) do
     ann_index_reference = ClipIndexAgent.get_ann_index()
     filenames = ClipIndexAgent.get_filenames()
 
-    with {:ok, query_vector} <- Vectorizer.vectorize_text(query),
-         {:ok, labels, dists} <- ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
+    with {:ok, labels, dists} <- ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
       result_indices = labels |> Nx.to_flat_list()
       distances = dists |> Nx.to_flat_list()
 
