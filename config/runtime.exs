@@ -113,3 +113,13 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
+
+config :media_search_demo,
+  # the dimension of the embedding vector
+  clip_embedding_dimension: 512,
+  # directory where images are stored
+  image_directory: "priv/images",
+  # path to save the "filenames" array
+  filenames_save_path: "priv/clip_index_filenames.json",
+  # path to save the clip index (the embeddings)
+  ann_index_save_path: "priv/clip_index.ann"

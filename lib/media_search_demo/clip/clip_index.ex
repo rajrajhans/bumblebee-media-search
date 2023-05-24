@@ -10,7 +10,7 @@ defmodule MediaSearchDemo.Clip.Index do
 
   alias MediaSearchDemo.Vectorizer
   alias MediaSearchDemo.ANN
-  alias MediaSearchDemo.Constants
+
   alias MediaSearchDemo.Clip.ClipIndexAgent
 
   @type search_result :: %{
@@ -29,9 +29,9 @@ defmodule MediaSearchDemo.Clip.Index do
   """
   @dialyzer {:nowarn_function, build_index: 3}
   def build_index(
-        ann_index_save_path \\ Constants.default_ann_index_save_path(),
-        filenames_save_path \\ Constants.default_filenames_save_path(),
-        image_directory \\ Constants.default_image_directory()
+        ann_index_save_path \\ Application.get_env(:media_search_demo, :ann_index_save_path),
+        filenames_save_path \\ Application.get_env(:media_search_demo, :filenames_save_path),
+        image_directory \\ Application.get_env(:media_search_demo, :clip_embedding_dimension)
       ) do
     # list images in image directory
     all_images = File.ls!(image_directory) |> Enum.reject(&(&1 |> String.starts_with?(".")))
@@ -59,8 +59,9 @@ defmodule MediaSearchDemo.Clip.Index do
 
     vectors = Enum.map(vectors_with_file_name, fn {vector, _filename} -> vector end)
     filenames = Enum.map(vectors_with_file_name, fn {_vector, filename} -> filename end)
+    dimension = Application.get_env(:media_search_demo, :clip_embedding_dimension)
 
-    with {:ok, ann_index} <- ANN.build_index(Constants.clip_embedding_size(), vectors) do
+    with {:ok, ann_index} <- ANN.build_index(dimension, vectors) do
       ANN.save_index(ann_index, ann_index_save_path)
       File.write!(filenames_save_path, Jason.encode!(filenames))
 

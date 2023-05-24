@@ -2,13 +2,12 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
   use Agent
 
   alias MediaSearchDemo.ANN
-  alias MediaSearchDemo.Constants
 
   require Logger
 
-  def start_link(opts) do
-    filenames = init_filenames(opts)
-    {:ok, ann_index} = init_ann_index(opts)
+  def start_link(_opts) do
+    filenames = init_filenames()
+    {:ok, ann_index} = init_ann_index()
 
     Agent.start_link(
       fn ->
@@ -31,15 +30,10 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
     Agent.get(__MODULE__, fn state -> state.filenames end)
   end
 
-  @spec init_filenames(Keyword.t()) :: list(String.t())
-  def init_filenames(opts) do
+  @spec init_filenames() :: list(String.t())
+  def init_filenames() do
     try do
-      filenames_path =
-        opts
-        |> Keyword.get(
-          :filename_path,
-          Constants.default_filenames_save_path()
-        )
+      filenames_path = Application.get_env(:media_search_demo, :filenames_save_path)
 
       File.read!(filenames_path) |> Jason.decode!()
     rescue
@@ -52,18 +46,19 @@ defmodule MediaSearchDemo.Clip.ClipIndexAgent do
     end
   end
 
-  @spec init_ann_index(Keyword.t()) :: {:ok, reference()} | {:ok, nil}
-  def init_ann_index(opts) do
+  @spec init_ann_index() :: {:ok, reference()} | {:ok, nil}
+  def init_ann_index() do
     try do
-      ann_index_path =
-        opts |> Keyword.get(:ann_index_path, Constants.default_ann_index_save_path())
-
+      ann_index_path = Application.get_env(:media_search_demo, :ann_index_save_path)
       index_file_exists = File.exists?(ann_index_path)
+
+      clip_embedding_dimension =
+        Application.get_env(:media_search_demo, :clip_embedding_dimension)
 
       if index_file_exists do
         ANN.load_index(
           ann_index_path,
-          Constants.clip_embedding_size()
+          clip_embedding_dimension
         )
       else
         Logger.info(

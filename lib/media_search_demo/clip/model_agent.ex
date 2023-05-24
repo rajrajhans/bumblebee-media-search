@@ -5,7 +5,6 @@ defmodule MediaSearchDemo.Clip.ModelAgent do
 
   use Agent
   require Logger
-  alias MediaSearchDemo.Constants
 
   @hf_model "openai/clip-vit-base-patch32"
 
@@ -49,10 +48,12 @@ defmodule MediaSearchDemo.Clip.ModelAgent do
         architecture: :base
       )
 
+    dimension = Application.get_env(:media_search_demo, :clip_embedding_dimension)
+
     vision_model_with_projection_head =
       vision_model
       |> Axon.nx(& &1.pooled_state)
-      |> Axon.dense(Constants.clip_embedding_size(),
+      |> Axon.dense(dimension,
         use_bias: false,
         name: "visual_projection"
       )
@@ -73,10 +74,12 @@ defmodule MediaSearchDemo.Clip.ModelAgent do
         architecture: :base
       )
 
+    dimension = Application.get_env(:media_search_demo, :clip_embedding_dimension)
+
     text_model_with_projection_head =
       text_model
       |> Axon.nx(& &1.pooled_state)
-      |> Axon.dense(512, use_bias: false, name: "text_projection")
+      |> Axon.dense(dimension, use_bias: false, name: "text_projection")
 
     text_params_with_text_projection =
       put_in(text_params["text_projection"], text_projection_params)
