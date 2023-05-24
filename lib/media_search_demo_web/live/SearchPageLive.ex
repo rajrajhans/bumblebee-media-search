@@ -48,6 +48,12 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
           </div>
         <% end %>
 
+        <%= if @error do %>
+          <div class="text-center text-red-600">
+            <%= @error %>
+          </div>
+        <% end %>
+
         <%= if length(@search_results) > 0 do %>
           <h2 class="font-medium text-xl mb-5">
             Search results for <span class="text-blue-800">"<%= @search_query %>"</span>
@@ -85,20 +91,28 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
      socket
      |> assign(is_searching: true)
      |> assign(search_query: search_query)
-     |> assign(search_results: [])}
+     |> assign(search_results: [])
+     |> assign(:error, nil)}
   end
 
   @dialyzer {:nowarn_function, handle_info: 2}
   def handle_info({:search, search_query}, socket) do
     Logger.info("Searching for #{search_query}")
 
-    with {:ok, search_results} <- Index.search_index(search_query) do
-      {:noreply, socket |> assign(is_searching: false) |> assign(search_results: search_results)}
+    with {:ok, search_results} <- Index.search_index_with_text(search_query) do
+      {:noreply,
+       socket
+       |> assign(is_searching: false)
+       |> assign(search_results: search_results)
+       |> assign(:error, nil)}
     else
       e ->
         Logger.error("[SEARCH_PAGE] Failed to search index: #{inspect(e)}")
-        # todo -> show toast
-        {:noreply, socket |> assign(is_searching: false) |> assign(error: "Search Failed")}
+
+        {:noreply,
+         socket
+         |> assign(is_searching: false)
+         |> assign(error: "Search Failed")}
     end
   end
 end
