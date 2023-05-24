@@ -18,7 +18,7 @@ defmodule MediaSearchDemoWeb.Router do
     pipe_through :browser
 
     live "/", SearchPageLive, :index
-    live "/image-search", ImageSearchPageLive, :index
+    live "/search-with-image", ImageSearchPageLive, :index
 
     get "/phoenix", PageController, :home
   end

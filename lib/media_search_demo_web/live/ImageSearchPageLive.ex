@@ -26,27 +26,37 @@ defmodule MediaSearchDemoWeb.ImageSearchPageLive do
     <div class="container">
       <div class="row">
         <form phx-submit="set_query_image" phx-change="validate" class="pb-2">
-          <div class="mb-4 flex items-center gap-10">
+          <div class="mb-4 flex items-center gap-10 justify-between w-full">
             <.live_file_input upload={@uploads.query_image} />
 
             <button
               type="submit"
-              class="bg-transparent hover:bg-blue-500 text-blue-800 font-medium hover:text-white py-2 px-4 border border-blue-800 hover:border-transparent rounded flex m-auto"
+              class="bg-transparent hover:bg-blue-500 text-blue-800 font-medium hover:text-white py-2 px-4 border border-blue-800 hover:border-transparent rounded"
             >
               Upload
             </button>
           </div>
         </form>
 
-        <%= if @is_searching do %>
-          <div class="text-center">
-            Loading...
-          </div>
-        <% end %>
-
         <%= if @error do %>
           <div class="text-center text-red-600">
             <%= @error %>
+          </div>
+        <% end %>
+
+        <%= if @query_image do %>
+          <div class="text-center text-red-600">
+            <img
+              class="rounded-md h-[150px] object-cover flex m-auto mb-10"
+              src={"data:image/png;base64, " <> Base.encode64(@query_image)}
+              alt="search query image"
+            />
+          </div>
+        <% end %>
+
+        <%= if @is_searching do %>
+          <div class="mt-10 text-center">
+            Loading...
           </div>
         <% end %>
 
@@ -80,9 +90,7 @@ defmodule MediaSearchDemoWeb.ImageSearchPageLive do
     {:noreply, socket}
   end
 
-  def handle_event("set_query_image", params, socket) do
-    Logger.info("Received image: #{inspect(params)}")
-
+  def handle_event("set_query_image", _params, socket) do
     [image] =
       consume_uploaded_entries(socket, :query_image, fn %{path: path}, _entry ->
         {:ok, File.read!(path)}
