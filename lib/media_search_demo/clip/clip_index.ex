@@ -40,23 +40,33 @@ defmodule MediaSearchDemo.Clip.Index do
     vectors_with_file_name =
       all_images
       |> Enum.with_index()
-      |> Enum.map(fn {image_file_name, i} ->
-        Logger.debug("[CLIP_INDEX] Indexing image #{i} #{image_file_name}")
-        image_path = Path.join(image_directory, image_file_name)
-        image_data = File.read!(image_path)
+      # task async stream is used to vectorize images in parallel (note: since we are using Axon.predict and not Nx.Serving inside vectorizer, we are still limited to actually vectorizing just one image at a time)
+      |> Task.async_stream(
+        fn {image_file_name, i} ->
+          Logger.debug("[CLIP_INDEX] Indexing image #{i} #{image_file_name}")
+          image_path = Path.join(image_directory, image_file_name)
+          image_data = File.read!(image_path)
 
-        case Vectorizer.vectorize_image(image_data) do
-          {:ok, vector} ->
-            {vector, image_file_name}
+          case Vectorizer.vectorize_image(image_data) do
+            {:ok, vector} ->
+              Logger.debug("[CLIP_INDEX] Done indexing image #{i} #{image_file_name}")
+              {vector, image_file_name}
 
-          {:error, reason} ->
-            Logger.error(
-              "[CLIP_INDEX] Failed to vectorize image #{image_path}: #{inspect(reason)}"
-            )
+            {:error, reason} ->
+              Logger.error(
+                "[CLIP_INDEX] Failed to vectorize image #{image_path}: #{inspect(reason)}"
+              )
 
-            nil
-        end
-      end)
+              nil
+          end
+        end,
+        max_concurrency: 5,
+        ordered: false,
+        timeout: :timer.minutes(2),
+        on_timeout: :kill_task
+      )
+      |> Enum.map(fn {:ok, x} -> x end)
+      |> Enum.to_list()
       |> Enum.reject(&is_nil/1)
 
     vectors = Enum.map(vectors_with_file_name, fn {vector, _filename} -> vector end)
