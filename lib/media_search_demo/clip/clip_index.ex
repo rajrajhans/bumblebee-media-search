@@ -38,8 +38,10 @@ defmodule MediaSearchDemo.Clip.Index do
 
     # vectorize each image, and create a tuple with {vector, file_name} for each image
     vectors_with_file_name =
-      Enum.map(all_images, fn image_file_name ->
-        Logger.debug("[CLIP_INDEX] Indexing image #{image_file_name}")
+      all_images
+      |> Enum.with_index()
+      |> Enum.map(fn {image_file_name, i} ->
+        Logger.debug("[CLIP_INDEX] Indexing image #{i} #{image_file_name}")
         image_path = Path.join(image_directory, image_file_name)
         image_data = File.read!(image_path)
 
