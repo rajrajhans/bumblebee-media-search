@@ -119,7 +119,7 @@ defmodule MediaSearchDemo.Clip.Index do
     ann_index_reference = ClipIndexAgent.get_ann_index()
     filenames = ClipIndexAgent.get_filenames()
 
-    with {:ok, labels, dists} <- ANN.get_nearest_neighbors(ann_index_reference, query_vector, 10) do
+    with {:ok, labels, dists} <- ANN.get_nearest_neighbors(ann_index_reference, query_vector, 15) do
       result_indices = labels |> Nx.to_flat_list()
       distances = dists |> Nx.to_flat_list()
 
