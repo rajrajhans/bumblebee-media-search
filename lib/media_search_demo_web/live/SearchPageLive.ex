@@ -21,7 +21,7 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
     ~H"""
     <div class="container">
       <div class="row">
-        <form phx-submit="set-search-query" class="pb-2">
+        <form phx-submit="set-search-query" class="pb-2" autocomplete="off">
           <div class="mb-4 flex items-center gap-10">
             <input
               class="shadow appearance-none border border-gray-400 rounded flex-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

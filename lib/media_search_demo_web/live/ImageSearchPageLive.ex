@@ -25,7 +25,7 @@ defmodule MediaSearchDemoWeb.ImageSearchPageLive do
     ~H"""
     <div class="container">
       <div class="row">
-        <form phx-submit="set_query_image" phx-change="validate" class="pb-2">
+        <form phx-submit="set_query_image" phx-change="validate" class="pb-2" autocomplete="off">
           <div class="mb-4 flex items-center gap-10 justify-between w-full">
             <.live_file_input upload={@uploads.query_image} />
 
