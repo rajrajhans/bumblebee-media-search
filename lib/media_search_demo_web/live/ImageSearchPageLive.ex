@@ -11,6 +11,7 @@ defmodule MediaSearchDemoWeb.ImageSearchPageLive do
 
     {:ok,
      socket
+     |> assign(:page_title, "Search with image")
      |> assign(:query_image, initial_query_image)
      |> assign(:error, initial_error)
      |> assign(:is_searching, initial_is_searching)

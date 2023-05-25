@@ -11,6 +11,7 @@ defmodule MediaSearchDemoWeb.SearchPageLive do
 
     {:ok,
      socket
+     |> assign(:page_title, "Search with text")
      |> assign(:search_query, initial_search_query)
      |> assign(:is_searching, initial_is_searching)
      |> assign(:search_results, initial_search_results)
