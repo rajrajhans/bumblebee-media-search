@@ -4,6 +4,16 @@
 - Presented at [ElixirConf Africa 2023 for the talk "Natural Language Media Search with Elixir , Bumblebee and Nx."](https://elixirconf.africa/sessions/natural-language-media-search-with-elixir-bumblebee-and-nx). Slides can be found [here](https://assets.rajrajhans.com/bumblebee-media-search/slides_raj_rajhans_elixir_conf_africa_2023.pdf)
 - Built using [Phoenix Framework](https://github.com/phoenixframework/phoenix), [Bumblebee](https://github.com/elixir-nx/bumblebee), [Axon](https://github.com/elixir-nx/axon), [Nx](https://github.com/elixir-nx/nx) and [HNSWLib](https://github.com/elixir-nx/hnswlib).
 
+## Sneak Peek: Searching Images with Text
+
+| ![ Searching Images with Text 1 ](./docs/search-with-text-1.jpeg) | ![ Searching Images with Text 2 ](./docs/search-with-text-2.jpeg) | ![ Searching Images with Text 3 ](./docs/search-with-text-3.jpeg) |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+
+## Sneak Peek: Searching Images with an Image
+
+| ![ Searching Images with an Image 1 ](./docs/search-with-image-1.png) | ![ Searching Images with an Image 2 ](./docs/search-with-image-2.jpeg) | ![ Searching Images with an Image 3 ](./docs/search-with-image-3.jpeg) |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+
 ## Installation
 
 - Uses Nix for dependency management. [Install Nix](https://nixos.org/download.html) if you don't have it already.
