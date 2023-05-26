@@ -6,9 +6,9 @@
 
 ## Sneak Peek: Searching for Images with Text
 
-| ![ Searching Images with text 1 ](./docs/search-with-text-3.jpeg) | ![ Searching Images with text 1 ](./docs/search-with-text-4.jpeg) |
+| ![ Searching Images with text 1 ](./docs/search-with-text-3.jpeg) | ![ Searching Images with text 1 ](./docs/search-with-text-2.jpeg) |
 | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-| ![ Searching Images with text 3 ](./docs/search-with-text-1.jpeg) | ![ Searching Images with text 4 ](./docs/search-with-text-2.jpeg) |
+| ![ Searching Images with text 3 ](./docs/search-with-text-1.jpeg) | ![ Searching Images with text 4 ](./docs/search-with-text-4.jpeg) |
 
 ## Sneak Peek: Searching for Images with an Image
 
@@ -36,3 +36,8 @@
 - Once the images are downloaded to `priv/images` directory, you have two options:
   1. Follow the steps in [Using with Your Images](#using-with-your-images) section to create an index from the 25k Unsplash images. (will take some time)
   2. Download the pre-built index files from [here](https://assets.rajrajhans.com/bumblebee-media-search/unsplash-25k/clip_index.ann) and [here](https://assets.rajrajhans.com/bumblebee-media-search/unsplash-25k/clip_index_filenames.json) and save both to `priv` directory.
+
+## How does it work?
+
+- The application uses the [CLIP model](https://openai.com/research/clip) with Bumblebee and Nx to create an index of images and then search the index for related images.
+- For more details, please check the talk slides. Slides can be found [here](https://assets.rajrajhans.com/bumblebee-media-search/slides_raj_rajhans_elixir_conf_africa_2023.pdf)
