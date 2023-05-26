@@ -1,6 +1,7 @@
 # Bumblebee Media Search
 
 - A demo application that uses the [CLIP model](https://openai.com/research/clip) for natural language media search (searching images with text, and searching related images with an image).
+- Presented at [ElixirConf Africa 2023 for the talk "Natural Language Media Search with Elixir , Bumblebee and Nx."](https://elixirconf.africa/sessions/natural-language-media-search-with-elixir-bumblebee-and-nx). Slides can be found [here](https://assets.rajrajhans.com/bumblebee-media-search/slides_raj_rajhans_elixir_conf_africa_2023.pdf)
 - Built using [Phoenix Framework](https://github.com/phoenixframework/phoenix), [Bumblebee](https://github.com/elixir-nx/bumblebee), [Axon](https://github.com/elixir-nx/axon), [Nx](https://github.com/elixir-nx/nx) and [HNSWLib](https://github.com/elixir-nx/hnswlib).
 
 ## Installation
