@@ -11,8 +11,8 @@
 
 ## Sneak Peek: Searching Images with an Image
 
-| ![ Searching Images with an Image 1 ](./docs/search-with-image-1.png) | ![ Searching Images with an Image 2 ](./docs/search-with-image-2.jpeg) | ![ Searching Images with an Image 3 ](./docs/search-with-image-3.jpeg) |
-| --------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| ![ Searching Images with an Image 1 ](./docs/search-with-image-1.png) | ![ Searching Images with an Image 2 ](./docs/search-with-image-2.jpeg) | ![ Searching Images with an Image 3 ](./docs/search-with-image-3.png) |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------- |
 
 ## Installation
 
