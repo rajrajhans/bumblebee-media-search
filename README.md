@@ -6,15 +6,15 @@
 
 ## Sneak Peek: Searching for Images with Text
 
-| ![ Searching Images with text 1 ](./docs/search-with-image-3.jpeg) | ![ Searching Images with text 1 ](./docs/search-with-image-4.jpeg) |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| ![ Searching Images with text 3 ](./docs/search-with-image-1.jpeg) | ![ Searching Images with text 4 ](./docs/search-with-image-2.jpeg) |
+| ![ Searching Images with text 1 ](./docs/search-with-text-3.jpeg) | ![ Searching Images with text 1 ](./docs/search-with-text-4.jpeg) |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| ![ Searching Images with text 3 ](./docs/search-with-text-1.jpeg) | ![ Searching Images with text 4 ](./docs/search-with-text-2.jpeg) |
 
 ## Sneak Peek: Searching for Images with an Image
 
-| ![ Searching Images with an Image 1 ](./docs/search-with-image-1.png)  | ![ Searching Images with an Image 2 ](./docs/search-with-image-2.jpeg) |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| ![ Searching Images with an Image 3 ](./docs/search-with-image-3.jpeg) | ![ Searching Images with an Image 4 ](./docs/search-with-image-4.jpeg) |
+| ![ Searching Images with an Image 1 ](./docs/search-with-image-1.png) | ![ Searching Images with an Image 2 ](./docs/search-with-image-2.jpeg) |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| ![ Searching Images with an Image 3 ](./docs/search-with-image-3.png) | ![ Searching Images with an Image 4 ](./docs/search-with-image-4.jpeg) |
 
 ## Installation
 
