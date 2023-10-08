@@ -1,7 +1,6 @@
 # Bumblebee Media Search
 
 - A demo application that uses the [CLIP model](https://openai.com/research/clip) for natural language media search (searching images with text, and searching related images with an image).
-- Presented at [ElixirConf Africa 2023 for the talk "Natural Language Media Search with Elixir , Bumblebee and Nx."](https://elixirconf.africa/sessions/natural-language-media-search-with-elixir-bumblebee-and-nx). Slides can be found [here](https://assets.rajrajhans.com/bumblebee-media-search/slides_raj_rajhans_elixir_conf_africa_2023.pdf)
 - Built using [Phoenix Framework](https://github.com/phoenixframework/phoenix), [Bumblebee](https://github.com/elixir-nx/bumblebee), [Axon](https://github.com/elixir-nx/axon), [Nx](https://github.com/elixir-nx/nx) and [HNSWLib](https://github.com/elixir-nx/hnswlib).
 
 ## Sneak Peek: Searching for Images with Text
@@ -15,6 +14,13 @@
 | ![ Searching Images with an Image 1 ](./docs/search-with-image-1.png) | ![ Searching Images with an Image 2 ](./docs/search-with-image-2.jpeg) |
 | --------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | ![ Searching Images with an Image 3 ](./docs/search-with-image-3.png) | ![ Searching Images with an Image 4 ](./docs/search-with-image-4.jpeg) |
+
+## Nx Servings
+
+- This uses Nx Servings for serving the CLIP model. There are two sets of Nx Servings in the codebase:
+  1. [Nx Servings provided by Bumblebee for text & image embeddings](./lib/media_search_demo/clip/servings/bumblebee/): Using ready made Nx Servings provided by Bumblebee library.
+  2. [Hand rolled Nx Servings for text & image embeddings](./lib/media_search_demo/clip/servings/custom/): Custom implemented Nx Servings intended to learn how to implement Nx Servings from scratch.
+- Both provide the same output and can be used interchangeably. However, if you're interested in learning how Nx Serving works and how to implement them, the hand rolled Nx Serving files will be helpful.
 
 ## Installation
 
