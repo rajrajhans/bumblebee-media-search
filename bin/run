@@ -23,7 +23,7 @@ run_compile() {
 
 run_server() {
   with_dev_env
-  iex --sname copilot --cookie copilot -S mix phx.server
+  iex --sname clip-media-search --cookie clip-media-search -S mix phx.server
 }
 
 run_iex() {

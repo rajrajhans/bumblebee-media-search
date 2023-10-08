@@ -4,11 +4,12 @@ defmodule MediaSearchDemo.Application do
   @moduledoc false
 
   use Application
+  alias MediaSearchDemo.Clip.Servings.Constants
 
   @impl true
   def start(_type, _args) do
     # make sure the model is loaded before starting the app
-    Bumblebee.load_model({:hf, "openai/clip-vit-base-patch32"})
+    {:ok, _} = Bumblebee.load_model({:hf, Constants.clip_hf_model()})
 
     children = [
       # Start the Telemetry supervisor
@@ -21,8 +22,39 @@ defmodule MediaSearchDemo.Application do
       {Finch, name: MediaSearchDemo.Finch},
       # Start the Endpoint (http/https)
       MediaSearchDemoWeb.Endpoint,
-      MediaSearchDemo.Clip.ModelAgent,
-      MediaSearchDemo.Clip.ClipIndexAgent
+      MediaSearchDemo.Clip.ClipIndexAgent,
+      ## Hand Rolled Nx Serving for CLIP Text Embedding ->
+      {
+        Nx.Serving,
+        serving: MediaSearchDemo.Clip.Servings.Text.get_serving(),
+        name: MediaSearchDemo.Clip.TextServing,
+        batch_size: Constants.clip_text_batch_size(),
+        batch_timeout: Constants.clip_text_batch_timeout()
+      },
+      ## Hand Rolled Nx Servings for CLIP Image Embedding ->
+      {
+        Nx.Serving,
+        serving: MediaSearchDemo.Clip.Servings.Vision.get_serving(),
+        name: MediaSearchDemo.Clip.VisionServing,
+        batch_size: Constants.clip_vision_batch_size(),
+        batch_timeout: Constants.clip_vision_batch_timeout()
+      },
+      ## Bumblebee Nx Servings for CLIP Text Embedding ->
+      {
+        Nx.Serving,
+        serving: MediaSearchDemo.Clip.Servings.Bumblebee.Text.get_serving(),
+        name: MediaSearchDemo.Clip.Bumblebee.TextServing,
+        batch_size: Constants.clip_text_batch_size(),
+        batch_timeout: Constants.clip_text_batch_timeout()
+      },
+      ## Bumblebee Nx Servings for CLIP Image Embedding ->
+      {
+        Nx.Serving,
+        serving: MediaSearchDemo.Clip.Servings.Bumblebee.Vision.get_serving(),
+        name: MediaSearchDemo.Clip.Bumblebee.VisionServing,
+        batch_size: Constants.clip_vision_batch_size(),
+        batch_timeout: Constants.clip_vision_batch_timeout()
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
