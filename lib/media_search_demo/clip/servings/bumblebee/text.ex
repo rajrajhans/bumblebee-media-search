@@ -9,7 +9,6 @@ defmodule MediaSearchDemo.Clip.Servings.Bumblebee.Text do
     Bumblebee.Text.TextEmbedding.text_embedding(model_info, tokenizer,
       output_attribute: :embedding,
       output_pool: nil,
-      sequence_length: Constants.sequence_length(),
       embedding_processor: nil
     )
   end

@@ -8,7 +8,6 @@ defmodule MediaSearchDemo.Clip.Servings.Bumblebee.Vision do
 
     Bumblebee.Vision.ImageEmbedding.image_embedding(model_info, featurizer,
       output_attribute: nil,
-      output_pool: nil,
       embedding_processor: nil
     )
   end
