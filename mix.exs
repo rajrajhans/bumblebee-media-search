@@ -62,9 +62,9 @@ defmodule MediaSearchDemo.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
 
       # ML
-      {:bumblebee, "~> 0.3.0"},
-      {:nx, "~> 0.5.0"},
-      {:exla, "~> 0.5.0"},
+      {:bumblebee, "~> 0.4.2"},
+      {:nx, "~> 0.6.2"},
+      {:exla, ">= 0.5.0"},
 
       # Image decoding
       {:stb_image, "~> 0.6.0"},
