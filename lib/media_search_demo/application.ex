@@ -14,8 +14,6 @@ defmodule MediaSearchDemo.Application do
     children = [
       # Start the Telemetry supervisor
       MediaSearchDemoWeb.Telemetry,
-      # Start the Ecto repository
-      MediaSearchDemo.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: MediaSearchDemo.PubSub},
       # Start Finch

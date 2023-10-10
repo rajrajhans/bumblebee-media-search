@@ -7,9 +7,6 @@
 # General application configuration
 import Config
 
-config :media_search_demo,
-  ecto_repos: [MediaSearchDemo.Repo]
-
 # Configures the endpoint
 config :media_search_demo, MediaSearchDemoWeb.Endpoint,
   url: [host: "localhost"],

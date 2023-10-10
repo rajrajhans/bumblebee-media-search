@@ -58,17 +58,12 @@ run_db.rollback() {
 
 run_dev.reset() {
   with_dev_env
-
-  mix ecto.drop
-  mix ecto.create
-  mix ecto.migrate
+  # noop
 }
 
 run_test.reset() {
   with_test_env
-  mix ecto.drop
-  mix ecto.create
-  mix ecto.migrate
+  # noop
 }
 
 run_test() {
@@ -102,8 +97,6 @@ run_test.migration() {
   mix local.hex --force
 
   with_test_env
-
-  mix ecto.create && mix ecto.migrate && mix ecto.rollback --all
 }
 
 run_format() {
