@@ -66,7 +66,7 @@ defmodule MediaSearchDemo.ANN do
     HNSWLib.Index.knn_query(ann_index, query_tensor, k: n)
   rescue
     e ->
-      Logger.error("[ANN] Failed to get nearest neighbors: #{inspect(e)}]")
+      Logger.error("[ANN] Failed to get nearest neighbors: #{inspect(e)}")
       {:error, :nns_failed}
   end
 end

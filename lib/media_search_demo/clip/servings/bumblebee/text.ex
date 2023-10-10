@@ -20,6 +20,8 @@ defmodule MediaSearchDemo.Clip.Servings.Bumblebee.Text do
       serving,
       [text]
     )
+    |> Enum.map(fn res -> res.embedding end)
+    |> List.first()
   end
 
   defp clip_text_embeddings_model() do
